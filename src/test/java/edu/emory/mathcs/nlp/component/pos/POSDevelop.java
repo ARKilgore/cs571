@@ -39,9 +39,9 @@ public class POSDevelop
 	@Test
 	public void develop() throws IOException
 	{
-		final String  root = "/Users/jdchoi/Emory/webpage/public_html/courses/cs571/dat/";
-		final String  train_file   = root+"wsj-pos.trn";
-		final String  develop_file = root+"wsj-pos.dev";
+		final String  root = "C:/Users/Andrew/Documents/GitHub/cs571/dat/";
+		final String  train_file   = root+"wsj-pos/trn";
+		final String  develop_file = root+"wsj-pos/dev";
 		final boolean average = false;
 		final double  ambiguity_class_threshold = 0.4;
 		final double  learning_rate = 0.02;
