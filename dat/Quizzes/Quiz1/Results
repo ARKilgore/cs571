@@ -1,0 +1,51 @@
+Results
+=======
+
+Perceptron v Ada Grad
+---------------------  
+Without averaging, using a multinomial perceptron (94.22) was less accurate than using a multinomial ada grad hinge model (95.34).  
+However, for models with averaged vectors, the perceptron performed better. Of these four varients, the unaveraged multinomial ada grad hinge model acheived the highest accuracy.  
+
+
+Averaging  
+---------  
+To examine the effectiveness of averaging I ran both binomial and multinomial versions of both ada grad and perceptron, with and without averaging.  
+
+* For binomial ada grad, it was (barely) more accurate to use unaveraged results (.04 percentage points difference).  
+* For multinomial ada grad, the unaveraged results were significantly more accurate than the averaged model (1.48 percentage points difference).  
+From this it seems as if the ada grad hinge model is not improved by the use of averaging vectors, it is actually harmed by it.  
+
+* For binomial perceptron, averaging slightly increased accuracy of the results (.04 percentage points difference).  
+* For multinomial perceptron, averaging significantly increased the accuracy of the results (.77 percentage points difference).
+From this it seems as if the perceptron model is definitely improved by the use of averaging vectors. This makes sense given our understanding of the overfitting problem that the perceptron model has.
+
+
+Binomial Ada Grad Hinge Results
+99: 89.60
+
+Binomial Ada Grad Hinge Average Results
+99: 89.56
+
+
+Multinomial Ada Grad Hinge Results
+99: 95.34
+
+Multinomial Ada Grad Hinge Average Results
+99: 93.86
+
+
+Binomial Perceptron Results
+99: 90.37
+
+Binomial Perceptron Average Results
+99: 90.41
+
+
+Multinomial Perceptron Results
+99: 94.22
+
+Multinomial Perceptron Average Results
+99: 94.99
+
+
+
