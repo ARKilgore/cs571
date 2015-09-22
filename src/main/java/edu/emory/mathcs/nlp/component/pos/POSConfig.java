@@ -22,49 +22,45 @@ import java.io.InputStream;
 import org.w3c.dom.Element;
 
 import edu.emory.mathcs.nlp.common.util.XMLUtils;
-import edu.emory.mathcs.nlp.component.util.NLPConfig;
-import edu.emory.mathcs.nlp.component.util.NLPMode;
-import edu.emory.mathcs.nlp.component.util.TSVReader;
+import edu.emory.mathcs.nlp.component.util.config.NLPConfig;
+import edu.emory.mathcs.nlp.component.util.reader.TSVIndex;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
 public class POSConfig extends NLPConfig<POSNode>
 {
-	public POSConfig()
-	{
-		super(NLPMode.pos);
-	}
+	private double ambiguity_class_threshold;
+	
+	public POSConfig() {super();}
 	
 	public POSConfig(InputStream in)
 	{
-		super(NLPMode.pos, in);
+		super(in);
+		setAmbiguityClassThreshold(XMLUtils.getDoubleTextContentFromFirstElementByTagName(xml, "ambiguity_class_threshold"));
 	}
-
-	public TSVReader<POSNode> getReader()
+	
+	@Override
+	public TSVIndex<POSNode> getTSVIndex()
 	{
-		Element eReader = XMLUtils.getFirstElementByTagName(getModeElement(), READER);
+		Element eReader = XMLUtils.getFirstElementByTagName(xml, TSV);
 		Object2IntMap<String> map = getFieldMap(eReader);
 		
-		int form  = map.get(FIELD_FORM)  - 1;
-		int pos   = map.get(FIELD_POS)   - 1;
-		int feats = map.get(FIELD_FEATS) - 1;
+		int form  = map.get(FIELD_FORM);
+		int pos   = map.get(FIELD_POS);
+		int lemma = map.getOrDefault(FIELD_LEMMA, -1);
+		int feats = map.getOrDefault(FIELD_FEATS, -1);
 		
-		return new TSVReader<>(new POSIndex(form, pos, feats));
-	}
-	
-	public int getDocumentSize()
-	{
-		return 0;
-	}
-	
-	public int getDocumentFrequencyCutoff()
-	{
-		return 0;
+		return new POSIndex(form, lemma, pos, feats);
 	}
 	
 	public double getAmbiguityClassThreshold()
 	{
-		return 0d;
+		return ambiguity_class_threshold;
+	}
+	
+	public void setAmbiguityClassThreshold(double threshold)
+	{
+		ambiguity_class_threshold = threshold;
 	}
 }

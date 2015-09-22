@@ -15,8 +15,11 @@
  */
 package edu.emory.mathcs.nlp.component.pos;
 
-import edu.emory.mathcs.nlp.component.util.FeatMap;
-import edu.emory.mathcs.nlp.component.util.NLPNode;
+import java.util.regex.Pattern;
+
+import edu.emory.mathcs.nlp.component.util.feature.Field;
+import edu.emory.mathcs.nlp.component.util.node.FeatMap;
+import edu.emory.mathcs.nlp.component.util.node.NLPNode;
 
 
 /**
@@ -25,40 +28,35 @@ import edu.emory.mathcs.nlp.component.util.NLPNode;
 public class POSNode extends NLPNode
 {
 	private static final long serialVersionUID = -8563108117037742010L;
-	protected String  pos_tag;
-	protected FeatMap feat_map;
+	protected String pos_tag;
+	protected String lemma;
 	
 	public POSNode(String form)
 	{
 		super(form);
-		set(null, new FeatMap());
 	}
 	
 	public POSNode(String form, String tag)
 	{
 		super(form);
-		set(tag, new FeatMap());
-	}
-	
-	public POSNode(String form, String tag, FeatMap map)
-	{
-		super(form);
-		set(tag, map);
-	}
-	
-	private void set(String tag, FeatMap map)
-	{
 		setPOSTag(tag);
-		setFeatMap(map);
 	}
 	
-//	============================== POS Tag ==============================
+	public POSNode(int id, String form, String lemma, String tag, FeatMap map)
+	{
+		super(id, form, map);
+		setLemma(lemma);
+		setPOSTag(tag);
+	}
+	
+//	============================== POS TAG ==============================
 	
 	public String getPOSTag()
 	{
 		return pos_tag;
 	}
 
+	/** @return the previous pos-tag. */
 	public String setPOSTag(String tag)
 	{
 		String t = pos_tag;
@@ -66,30 +64,52 @@ public class POSNode extends NLPNode
 		return t;
 	}
 	
-//	============================== Feature Map ==============================
-	
-	public FeatMap getFeatMap()
+	public boolean isPOSTag(String tag)
 	{
-		return feat_map;
+		return tag.equals(pos_tag);
 	}
 	
-	public void setFeatMap(FeatMap map)
+	public boolean isPOSTag(Pattern pattern)
 	{
-		feat_map = map;
+		return pattern.matcher(pos_tag).find();
 	}
 	
-	public String getFeat(String key)
+//	============================== LEMMA ==============================
+	
+	public String getLemma()
 	{
-		return feat_map.get(key);
+		return lemma;
+	}
+
+	/** @return the previous lemma. */
+	public String setLemma(String lemma)
+	{
+		String t = lemma;
+		this.lemma = lemma;
+		return t;
 	}
 	
-	public void putFeat(String key, String value)
+	public boolean isLemma(String lemma)
 	{
-		feat_map.put(key, value);
+		return lemma.equals(lemma);
 	}
 	
-	public String removeFeat(String key)
+//	============================== HELPERS ==============================
+	
+	@Override
+	public String getValue(Field field)
 	{
-		return feat_map.remove(key);
+		switch (field)
+		{
+		case lemma  : return getLemma();
+		case pos_tag: return getPOSTag();
+		default: return super.getValue(field);
+		}
+	}
+	
+	@Override
+	public String toString() 
+	{
+		return word_form+"\t"+pos_tag;
 	}
 }

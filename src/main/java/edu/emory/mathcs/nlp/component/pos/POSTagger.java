@@ -18,12 +18,8 @@ package edu.emory.mathcs.nlp.component.pos;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Set;
 
-import edu.emory.mathcs.nlp.component.eval.AccuracyEval;
-import edu.emory.mathcs.nlp.component.state.L2RState;
 import edu.emory.mathcs.nlp.component.util.NLPComponent;
-import edu.emory.mathcs.nlp.component.util.NLPFlag;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
 import edu.emory.mathcs.nlp.learn.util.StringInstance;
 import edu.emory.mathcs.nlp.learn.vector.StringVector;
@@ -31,15 +27,14 @@ import edu.emory.mathcs.nlp.learn.vector.StringVector;
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
-public class POSTagger<N extends POSNode> extends NLPComponent<N>
+public class POSTagger<N extends POSNode> extends NLPComponent<N,String,POSState<N>>
 {
 	private static final long serialVersionUID = -7926217238116337203L;
 	private AmbiguityClassMap ambiguity_class_map;
-	private Set<String> train_word_set;
 	
-	public POSTagger(NLPFlag flag, StringModel model)
+	public POSTagger(StringModel model)
 	{
-		super(flag, model);
+		super(new StringModel[]{model});
 	}
 	
 //	============================== LEXICONS ==============================
@@ -66,61 +61,23 @@ public class POSTagger<N extends POSNode> extends NLPComponent<N>
 		ambiguity_class_map = map;
 	}
 	
-	public Set<String> getTrainWordSet()
-	{
-		return train_word_set;
-	}
-
-	public void setTrainWordSet(Set<String> set)
-	{
-		train_word_set = set;
-	}
-	
 //	============================== PROCESS ==============================
 	
-	public void process(N[] nodes)
+	@Override
+	protected POSState<N> createState(N[] nodes)
 	{
-		L2RState<N> state = new POSState<>(nodes);
-		if (!isDecode()) state.clearGoldLabels();
-		
-		while (!state.isTerminate())
-		{
-			StringVector x = extractFeatures(state);
-			String label = getLabel(state, x);
-			state.setLabel(label);
-			state.next();
-			
-			if (isTrain()) model.addInstance(new StringInstance(label, x));
-		}
-		
-		if (isEvaluate()) state.evaluateTokens((AccuracyEval)eval);
+		return new POSState<>(nodes, ambiguity_class_map);
 	}
-	
-	private String getLabel(L2RState<N> state, StringVector x)
+
+	@Override
+	protected String getLabel(POSState<N> state, StringVector vector)
 	{
-		return isTrain() ? state.getGoldLabel() : model.predictBest(x).getLabel();
+		return isTrain() ? state.getGoldLabel() : models[0].predictBest(vector).getLabel();
 	}
-	
-	protected StringVector extractFeatures(L2RState<N> state)
+
+	@Override
+	protected void addInstance(String label, StringVector vector)
 	{
-		StringVector x = new StringVector();
-		N node; int type = 0;
-		
-		node = state.getNode(0);
-		if (node != null) x.add(type++, node.getWordForm());
-		
-		node = state.getNode(-1);
-		if (node != null) x.add(type++, node.getWordForm());
-		
-		node = state.getNode(1);
-		if (node != null) x.add(type++, node.getWordForm());
-		
-		node = state.getNode(-1);
-		if (node != null) x.add(type++, node.getPOSTag());
-		
-		node = state.getNode(0);
-		if (node != null) x.add(type++, ambiguity_class_map.get(node));
-		
-		return x;
+		models[0].addInstance(new StringInstance(label, vector));
 	}
 }

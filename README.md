@@ -7,3 +7,21 @@ This is a graduate course in computer science, studying topics in natural Langua
 * [Schedule](../../wiki/Schedule).
 * [Reading](../../wiki/Reading).
 * [Quizzes](../../wiki/Quizzes).
+
+## Quick Start
+
+* [How to install](md/quickstart/installation.md).
+* [How to decode](md/quickstart/decode.md).
+
+## Components
+
+* [Part-of-speech tagging](md/component/part_of_speech_tagging.md).
+
+## Tutorials
+
+* [Create an NLP component](md/tutorial/nlp_component.md).
+
+## Specification
+
+* [Configuration format](md/specification/configuration.md).
+* [Part-of-speech tags](md/specification/part_of_speech_tags.md).

@@ -20,9 +20,8 @@ import java.util.List;
 
 import edu.emory.mathcs.nlp.common.collection.tuple.DoubleIntPair;
 import edu.emory.mathcs.nlp.common.util.MathUtils;
-import edu.emory.mathcs.nlp.learn.sgd.StochasticGradientDescent;
-import edu.emory.mathcs.nlp.learn.sgd.adagrad.BinomialAdaGradHinge;
-import edu.emory.mathcs.nlp.learn.sgd.adagrad.MultinomialAdaGradHinge;
+import edu.emory.mathcs.nlp.learn.optimization.OnlineOptimizer;
+import edu.emory.mathcs.nlp.learn.optimization.sgd.AdaGrad;
 import edu.emory.mathcs.nlp.learn.util.Instance;
 import edu.emory.mathcs.nlp.learn.util.LibSVMReader;
 import edu.emory.mathcs.nlp.learn.weight.BinomialWeightVector;
@@ -43,7 +42,7 @@ public class SGDTest
 		LibSVMReader tst = new LibSVMReader(new FileInputStream(filename+".tst"));
 		
 		WeightVector w = new BinomialWeightVector(trn.featureSize());
-		StochasticGradientDescent sgd = new BinomialAdaGradHinge(w, true, 0.01f, 0.1f);
+		OnlineOptimizer sgd = new AdaGrad(w, true, 0.01f);
 		DoubleIntPair max = new DoubleIntPair(0,0);
 		double acc;
 		
@@ -67,7 +66,7 @@ public class SGDTest
 		LibSVMReader tst = new LibSVMReader(new FileInputStream(filename+".tst"));
 		
 		WeightVector w = new MultinomialWeightVector(trn.labelSize(), trn.featureSize());
-		StochasticGradientDescent sgd = new MultinomialAdaGradHinge(w, true, 0.01f, 0.1f);
+		OnlineOptimizer sgd = new AdaGrad(w, true, 0.01f);
 		DoubleIntPair max = new DoubleIntPair(0,0);
 		double acc;
 		

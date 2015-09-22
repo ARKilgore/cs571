@@ -22,7 +22,7 @@ public enum NLPFlag
 {
 	COLLECT,
 	TRAIN,
-	BOOTSTRAP,
+	AGGREGATE,
 	EVALUATE,
 	DECODE;
 }

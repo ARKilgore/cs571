@@ -17,31 +17,33 @@ package edu.emory.mathcs.nlp.component.pos;
 
 import java.util.List;
 
-import edu.emory.mathcs.nlp.component.util.FeatMap;
-import edu.emory.mathcs.nlp.component.util.TSVIndex;
+import edu.emory.mathcs.nlp.component.util.node.FeatMap;
+import edu.emory.mathcs.nlp.component.util.reader.TSVIndex;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
 public class POSIndex implements TSVIndex<POSNode>
 {
-	int form;
-	int pos;
-	int feats;
+	public int form;
+	public int lemma;
+	public int pos;
+	public int feats;
 	
 	public POSIndex(int form, int pos)
 	{
-		set(form, pos, -1);
+		set(form, -1, pos, -1);
 	}
 	
-	public POSIndex(int form, int pos, int feats)
+	public POSIndex(int form, int lemma, int pos, int feats)
 	{
-		set(form, pos, feats);
+		set(form, lemma, pos, feats);
 	}
 	
-	public void set(int form, int pos, int feats)
+	public void set(int form, int lemma, int pos, int feats)
 	{
 		this.form  = form;
+		this.lemma = lemma;
 		this.pos   = pos;
 		this.feats = feats;
 	}
@@ -49,14 +51,21 @@ public class POSIndex implements TSVIndex<POSNode>
 	@Override
 	public POSNode[] toNodeList(List<String[]> values)
 	{
-		return values.stream().map(v -> create(v)).toArray(POSNode[]::new);
+		int i, size = values.size();
+		POSNode[] nodes = new POSNode[size];
+		
+		for (i=0; i<size; i++)
+			nodes[i] = create(values.get(i), i);
+		
+		return nodes;
 	}
 	
-	public POSNode create(String[] values)
+	private POSNode create(String[] values, int id)
 	{
-		String  f = (form  >= 0) ? values[form] : null;
-		String  t = (pos   >= 0) ? values[pos] : null;
+		String  f = (form  >= 0) ? values[form]  : null;
+		String  l = (lemma >= 0) ? values[lemma] : null;
+		String  p = (pos   >= 0) ? values[pos]   : null;
 		FeatMap m = (feats >= 0) ? new FeatMap(values[feats]) : new FeatMap();
-		return new POSNode(f, t, m);
+		return new POSNode(id, f, l, p, m);
 	}
 }

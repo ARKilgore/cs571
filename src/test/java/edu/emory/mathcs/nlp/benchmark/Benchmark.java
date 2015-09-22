@@ -27,31 +27,16 @@ public class Benchmark
 	@Test
 	public void speed()
 	{
-		final int warm = 100, iter = 10000000;
-		String[] array = {"A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E"};
+		final int iter = 1000;
 		long st, et;
 		
-		for (int i=0; i<warm; i++)
-//			Arrays.stream(array).forEach(e -> call(e));
-			for (String e : array) call(e);
-		
+		double[] f = new double[100000];
+
 		st = System.currentTimeMillis();
 		for (int i=0; i<iter; i++)
-//			Arrays.stream(array).forEach(e -> call(e));
-			for (String e : array) call(e);
+			Arrays.fill(f, 1);
+//			IntStream.range(0, f.length).parallel().forEach(n -> { f[n] = 1; });
 		et = System.currentTimeMillis();
 		System.out.println(et-st);
 	}
-
-	@Test
-	public void test()
-	{
-		float[] f = {1,2,3};
-		float[] g = f.clone();
-		f[0] = 0;
-		System.out.println(Arrays.toString(f));
-		System.out.println(Arrays.toString(g));
-	}
-	
-	void call(String s) {}
 }

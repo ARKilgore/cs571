@@ -18,6 +18,7 @@ package edu.emory.mathcs.nlp.learn.model;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 
@@ -69,21 +70,35 @@ public class StringModel implements Serializable
 		instance_deque.add(instance);
 	}
 	
+	public void addInstances(Collection<StringInstance> instances)
+	{
+		for (StringInstance instance : instances)
+			addInstance(instance);
+	}
+	
 	public List<Instance> getInstanceList()
 	{
 		return instance_list;
 	}
 	
-	public void vectorize(int labelCutoff, int featureCutoff)
+	public void vectorize(int labelCutoff, int featureCutoff, boolean reset)
 	{
 		instance_list = new ArrayList<>();
 		StringInstance instance;
 		int labelIndex;
 		
 		// filtering
+		if (reset)
+		{
+			label_map  .initIndices();
+			feature_map.initIndices();
+		}
+		
 		label_map  .expand(labelCutoff);
 		feature_map.expand(featureCutoff);
-		weight_vector.expand(label_map.size(), feature_map.size());
+		
+		if (reset)	weight_vector.init  (label_map.size(), feature_map.size());
+		else		weight_vector.expand(label_map.size(), feature_map.size());
 		
 		// vectorizing
 		while (!instance_deque.isEmpty())
@@ -92,13 +107,10 @@ public class StringModel implements Serializable
 			labelIndex = label_map.indexOf(instance.getLabel());
 			
 			if (labelIndex >= 0)
-				instance_list.add(new Instance(getLabel(labelIndex), toSparseVector(instance.getVector())));
+				instance_list.add(new Instance(labelIndex, toSparseVector(instance.getVector())));
 		}
-	}
-	
-	private int getLabel(int index)
-	{
-		return weight_vector.isBinomial() ? index*2 - 1 : index;
+		
+		instance_deque = new ArrayDeque<>();
 	}
 	
 	public SparseVector toSparseVector(StringVector vector)
