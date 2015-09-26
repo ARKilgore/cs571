@@ -57,6 +57,16 @@ public class DEPNodeTest
 		assertEquals("jinho" , node.getLemma());
 		assertEquals("NNP"   , node.getPOSTag());
 		
+		assertEquals(null	 , node.getHead());
+		assertEquals(null	 , node.getGrandHead());
+		assertEquals(null	 , node.getLeftNearestSibling());
+		assertEquals(null	 , node.getRightNearestSibling());
+		assertEquals(null	 , node.getLeftMostDependent());
+		assertEquals(null	 , node.getRightMostDependent());
+		
+		
+
+		assertEquals("jinho"  , node.getFeat("fst"));
 		node.removeFeat("fst");
 		assertEquals(null  , node.getFeat("fst"));
 		assertEquals("choi", node.getFeat("lst"));
@@ -77,8 +87,29 @@ public class DEPNodeTest
 		node2.addDependent(node1, "nsubj");
 		node4.addDependent(node3, "det");
 		
-		List<DEPNode> list = node2.getDependentList();
-		assertEquals(node1, list.get(0));
-		assertEquals(node4, list.get(1));
+		List<DEPNode> listNode2 = node2.getDependentList();
+		assertEquals(node1, listNode2.get(0));
+		assertEquals(node4, listNode2.get(1));
+		
+		List<DEPNode> listNode2R = node2.getLeftDependentList();
+		assertEquals(node1, listNode2R.get(0));
+		
+		List<DEPNode> listNode2L = node2.getRightDependentList();
+		assertEquals(node4, listNode2L.get(0));
+		
+		List<DEPNode> listNode4 = node4.getDependentList();
+		assertEquals(node3, listNode4.get(0));
+		
+		List<DEPNode> grandDepList = node2.getGrandDependentList();
+		assertEquals(node3, grandDepList.get(0));
+		
+		List<DEPNode> grandDepListEmpty = node4.getGrandDependentList();
+		assert(grandDepListEmpty.isEmpty());
+		
+		assertEquals(node2, node1.getHead());
+		assertEquals(node2, node4.getHead());
+		assertEquals(node4, node3.getHead());
+		assertEquals(node2, node3.getGrandHead());
+		
 	}
 }
