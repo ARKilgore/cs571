@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Test;
 
 import edu.emory.mathcs.nlp.common.util.Joiner;
+import edu.emory.mathcs.nlp.component.util.feature.Field;
 import edu.emory.mathcs.nlp.component.util.node.FeatMap;
 import edu.emory.mathcs.nlp.component.util.reader.TSVReader;
 
@@ -78,15 +79,19 @@ public class DEPNodeTest
 	@Test
 	public void testSetters()
 	{
+		//create dep nodes 1 through 4
 		DEPNode node1 = new DEPNode(1, "He");
 		DEPNode node2 = new DEPNode(2, "bought");
 		DEPNode node3 = new DEPNode(3, "a");
 		DEPNode node4 = new DEPNode(4, "car");
 		
+		
+		//set dependencies
 		node2.addDependent(node4, "dobj");
 		node2.addDependent(node1, "nsubj");
 		node4.addDependent(node3, "det");
 		
+		//check dep lists, right and left dep lists, grand dep list
 		List<DEPNode> listNode2 = node2.getDependentList();
 		assertEquals(node1, listNode2.get(0));
 		assertEquals(node4, listNode2.get(1));
@@ -103,13 +108,18 @@ public class DEPNodeTest
 		List<DEPNode> grandDepList = node2.getGrandDependentList();
 		assertEquals(node3, grandDepList.get(0));
 		
+		//check empty grand dep
 		List<DEPNode> grandDepListEmpty = node4.getGrandDependentList();
 		assert(grandDepListEmpty.isEmpty());
 		
+		//test dep heads
 		assertEquals(node2, node1.getHead());
 		assertEquals(node2, node4.getHead());
 		assertEquals(node4, node3.getHead());
 		assertEquals(node2, node3.getGrandHead());
+		
+		//test ancestry path (getPath)
+		assertEquals(node4.getPath(node1, Field.word_form), "^car^bought|He" );
 		
 	}
 }
