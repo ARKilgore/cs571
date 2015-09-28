@@ -120,6 +120,10 @@ public class DEPNodeTest
 		
 		//test ancestry path (getPath)
 		assertEquals(node4.getPath(node1, Field.word_form), "^car^bought|He" );
+		assertEquals(node2.getPath(node2, Field.word_form), "^bought^bought");
+		assertEquals(node3.getLowestCommonAncestor(node1), node2);
+		assertEquals(node3.getLowestCommonAncestor(node3), node3);
+		assertEquals(node3.getLowestCommonAncestor(node4), node4);
 		
 	}
 }
