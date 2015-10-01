@@ -27,7 +27,7 @@ import edu.emory.mathcs.nlp.component.util.feature.FeatureTemplate;
 public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPState<DEPNode>>
 {
 	private static final long serialVersionUID = -2218894375050796569L;
-
+	private static final int MIN_LENGTH = 3;
 	public DEPFeatureTemplate()	
 	{
 		init();
@@ -40,6 +40,7 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 	@Override
 	protected String getFeature(FeatureItem<?> item)
 	{
+		int length;
 		DEPNode node = getNode(item);
 		if (node == null) return null;
 		
@@ -52,6 +53,18 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 		case feats: return node.getFeat((String)item.value);
 		case dependency_label: return node.getLabel();
 		case valency: return node.getValency((Direction)item.value);
+		case suffix: 
+			length = node.getSimplifiedWordForm().length();
+			if (length < MIN_LENGTH) {
+				return null;
+			}
+			return node.getSimplifiedWordForm().substring(length - 3, length);
+		case prefix: 
+			length = node.getSimplifiedWordForm().length();
+			if (length < MIN_LENGTH) {
+				return null;
+			}
+			return node.getSimplifiedWordForm().substring(0, 3);
 		default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
 		}
 	}
