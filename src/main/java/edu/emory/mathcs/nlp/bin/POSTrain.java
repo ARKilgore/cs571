@@ -21,10 +21,11 @@ import edu.emory.mathcs.nlp.common.util.BinUtils;
 import edu.emory.mathcs.nlp.common.util.IOUtils;
 import edu.emory.mathcs.nlp.component.pos.AmbiguityClassMap;
 import edu.emory.mathcs.nlp.component.pos.POSConfig;
-import edu.emory.mathcs.nlp.component.pos.POSFeatureTemplate;
 import edu.emory.mathcs.nlp.component.pos.POSNode;
 import edu.emory.mathcs.nlp.component.pos.POSState;
 import edu.emory.mathcs.nlp.component.pos.POSTagger;
+import edu.emory.mathcs.nlp.component.pos.feature.POSFeatureTemplate1;
+import edu.emory.mathcs.nlp.component.pos.feature.POSFeatureTemplate0;
 import edu.emory.mathcs.nlp.component.util.NLPComponent;
 import edu.emory.mathcs.nlp.component.util.config.NLPConfig;
 import edu.emory.mathcs.nlp.component.util.eval.AccuracyEval;
@@ -38,7 +39,7 @@ import edu.emory.mathcs.nlp.learn.weight.MultinomialWeightVector;
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
-public class POSTrain extends NLPTrain<POSNode,String,POSState<POSNode>>
+public class POSTrain extends NLPTrain<POSNode,POSState<POSNode>>
 {
 	public POSTrain(String[] args)
 	{
@@ -58,7 +59,7 @@ public class POSTrain extends NLPTrain<POSNode,String,POSState<POSNode>>
 	}
 	
 	@Override
-	protected NLPComponent<POSNode,String,POSState<POSNode>> createComponent()
+	protected NLPComponent<POSNode,POSState<POSNode>> createComponent()
 	{
 		return new POSTagger<>(new StringModel(new MultinomialWeightVector()));
 	}
@@ -68,13 +69,14 @@ public class POSTrain extends NLPTrain<POSNode,String,POSState<POSNode>>
 	{
 		switch (feature_template)
 		{
-		case 0: return new POSFeatureTemplate<>();
+		case 0: return new POSFeatureTemplate0();
+		case 1: return new POSFeatureTemplate1();
 		default: throw new IllegalArgumentException("Unknown feature template: "+feature_template);
 		}
 	}
 	
 	@Override
-	public void collect(TSVReader<POSNode> reader, List<String> inputFiles, NLPComponent<POSNode,String,POSState<POSNode>> component, NLPConfig<POSNode> configuration)
+	public void collect(TSVReader<POSNode> reader, List<String> inputFiles, NLPComponent<POSNode,POSState<POSNode>> component, NLPConfig<POSNode> configuration)
 	{
 		POSTagger<POSNode> tagger = (POSTagger<POSNode>)component;
 		POSConfig config = (POSConfig)configuration;

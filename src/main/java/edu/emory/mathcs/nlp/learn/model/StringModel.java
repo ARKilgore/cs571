@@ -76,6 +76,11 @@ public class StringModel implements Serializable
 			addInstance(instance);
 	}
 	
+	public Deque<StringInstance> getStringInstanceDeque()
+	{
+		return instance_deque;
+	}
+	
 	public List<Instance> getInstanceList()
 	{
 		return instance_list;
@@ -134,6 +139,16 @@ public class StringModel implements Serializable
 	public WeightVector getWeightVector()
 	{
 		return weight_vector;
+	}
+	
+	public void setWeightVector(WeightVector vector)
+	{
+		weight_vector = vector;
+	}
+	
+	public String getLabel(int index)
+	{
+		return label_map.getLabel(index);
 	}
 	
 	public StringPrediction predictBest(StringVector x)

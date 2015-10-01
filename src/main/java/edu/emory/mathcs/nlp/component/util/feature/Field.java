@@ -39,6 +39,7 @@ public enum Field
 	// dependency parsing features
 	dependency_label,
 	distance,
+	valency,
 	
 	// more
 	binary;	// set

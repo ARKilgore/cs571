@@ -15,6 +15,8 @@
  */
 package edu.emory.mathcs.nlp.component.util.eval;
 
+import edu.emory.mathcs.nlp.common.util.MathUtils;
+
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
@@ -36,8 +38,7 @@ public class AccuracyEval implements Eval
 	
 	public void clear()
 	{
-		correct = 0;
-		total   = 0;
+		correct = total = 0;
 	}
 	
 	public int correct()
@@ -53,6 +54,12 @@ public class AccuracyEval implements Eval
 	@Override
 	public double score()
 	{
-		return 100d * correct / total;
+		return MathUtils.accuracy(correct, total);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("ACC = %5.2f", score());
 	}
 }

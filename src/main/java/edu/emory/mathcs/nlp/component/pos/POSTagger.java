@@ -22,12 +22,13 @@ import java.io.ObjectOutputStream;
 import edu.emory.mathcs.nlp.component.util.NLPComponent;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
 import edu.emory.mathcs.nlp.learn.util.StringInstance;
+import edu.emory.mathcs.nlp.learn.util.StringPrediction;
 import edu.emory.mathcs.nlp.learn.vector.StringVector;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
-public class POSTagger<N extends POSNode> extends NLPComponent<N,String,POSState<N>>
+public class POSTagger<N extends POSNode> extends NLPComponent<N,POSState<N>>
 {
 	private static final long serialVersionUID = -7926217238116337203L;
 	private AmbiguityClassMap ambiguity_class_map;
@@ -70,9 +71,11 @@ public class POSTagger<N extends POSNode> extends NLPComponent<N,String,POSState
 	}
 
 	@Override
-	protected String getLabel(POSState<N> state, StringVector vector)
+	protected StringPrediction getModelPrediction(POSState<N> state, StringVector vector)
 	{
-		return isTrain() ? state.getGoldLabel() : models[0].predictBest(vector).getLabel();
+//		Prediction p = POSNeuralNetwork.nn.predictBest(models[0].toSparseVector(vector));
+//		return new StringPrediction(models[0].getLabel(p.getLabel()), p.getScore());
+		return models[0].predictBest(vector);
 	}
 
 	@Override

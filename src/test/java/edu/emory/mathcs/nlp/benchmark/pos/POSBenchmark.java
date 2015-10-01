@@ -25,12 +25,13 @@ import org.junit.Test;
 import edu.emory.mathcs.nlp.common.collection.tuple.DoubleIntPair;
 import edu.emory.mathcs.nlp.common.util.FileUtils;
 import edu.emory.mathcs.nlp.common.util.IOUtils;
-import edu.emory.mathcs.nlp.common.util.Sigmoid;
+import edu.emory.mathcs.nlp.component.dep.DEPNode;
 import edu.emory.mathcs.nlp.component.pos.AmbiguityClassMap;
 import edu.emory.mathcs.nlp.component.pos.POSIndex;
 import edu.emory.mathcs.nlp.component.pos.POSNode;
 import edu.emory.mathcs.nlp.component.pos.POSState;
 import edu.emory.mathcs.nlp.component.pos.POSTagger;
+import edu.emory.mathcs.nlp.component.pos.feature.POSFeatureTemplate0;
 import edu.emory.mathcs.nlp.component.util.NLPFlag;
 import edu.emory.mathcs.nlp.component.util.eval.AccuracyEval;
 import edu.emory.mathcs.nlp.component.util.eval.Eval;
@@ -39,8 +40,8 @@ import edu.emory.mathcs.nlp.component.util.reader.TSVReader;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
 import edu.emory.mathcs.nlp.learn.optimization.OnlineOptimizer;
 import edu.emory.mathcs.nlp.learn.optimization.sgd.AdaGrad;
+import edu.emory.mathcs.nlp.learn.optimization.sgd.LogisticRegression;
 import edu.emory.mathcs.nlp.learn.optimization.sgd.Perceptron;
-import edu.emory.mathcs.nlp.learn.optimization.sgd.SoftmaxRegression;
 import edu.emory.mathcs.nlp.learn.weight.MultinomialWeightVector;
 import edu.emory.mathcs.nlp.learn.weight.WeightVector;
 
@@ -53,8 +54,11 @@ public class POSBenchmark
 	@Test
 	public void baseline() throws IOException
 	{
-//		run(new POSFeatureTemplate0<>(), 0, true);
-		run(new POSFeatureTemplate0<>(), 2, false);
+		run(new POSFeatureTemplate0(), 2, true);
+		
+		DEPNode[] nodes = null;
+		AmbiguityClassMap map = new AmbiguityClassMap();
+		map.add(nodes);
 	}
 	
 	public void run(FeatureTemplate<POSNode,POSState<POSNode>> template, int type, boolean average) throws IOException
@@ -85,7 +89,7 @@ public class POSBenchmark
 		model.vectorize(label_cutoff, feature_cutoff, false);
 		
 		// train the statistical model
-		final double learning_rate = 0.01;
+		final double learning_rate = 0.02;
 		final int epochs = 200;
 		
 		WeightVector weight = model.getWeightVector();
@@ -95,7 +99,7 @@ public class POSBenchmark
 		{
 		case 0: sgd = new Perceptron(weight, average, learning_rate); break;
 		case 1: sgd = new AdaGrad   (weight, average, learning_rate); break;
-		case 2: sgd = new SoftmaxRegression(weight, average, learning_rate); weight.setSigmoid(new Sigmoid()); break;
+		case 2: sgd = new LogisticRegression(weight, average, learning_rate); break;
 		}
 		
 		Eval eval = new AccuracyEval();
