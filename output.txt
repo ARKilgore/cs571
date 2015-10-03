@@ -1,0 +1,23 @@
+[INFO] Error stacktraces are turned on.
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building corenlp 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- exec-maven-plugin:1.4.0:java (default-cli) @ corenlp ---
+Collecting lexicons:
+
+Training: 0
+
+AdaGrad: average = false, learning rate = 0.04, bias = 0.0
+- # of instances: 1820191
+- # of labels   : 22
+- # of features : 583178
+  1: 82.15
+  2: 82.51
+  3: 82.56
+  4: 82.71
+
+Training: 1
+

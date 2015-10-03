@@ -1,0 +1,4 @@
+mvn exec:java -Dexec.mainClass="edu.emory.mathcs.nlp.bin.DEPTrain" -Dexec.args="-c /home/reid/workspace/cs571/src/main/resources/configuration/config_train_dep.xml -t dat/wsj-dep/wsj-dep/trn/ -d dat/wsj-dep/wsj-dep/dev/ -te dep -de dep -f 1"  > output.
+tx
+
+
