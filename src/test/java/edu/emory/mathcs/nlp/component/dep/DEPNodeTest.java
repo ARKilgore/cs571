@@ -17,6 +17,8 @@ package edu.emory.mathcs.nlp.component.dep;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import edu.emory.mathcs.nlp.common.util.Joiner;

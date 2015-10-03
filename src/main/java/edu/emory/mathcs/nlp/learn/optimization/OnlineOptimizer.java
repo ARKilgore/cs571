@@ -52,7 +52,7 @@ public abstract class OnlineOptimizer extends Optimizer
 		train(instances, 1);
 	}
 	
-	/** Shuffles the trainign instances. */
+	/** Shuffles the training instances. */
 	public void shuffle(List<Instance> instances)
 	{
 		Collections.shuffle(instances, random);

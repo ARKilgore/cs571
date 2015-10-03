@@ -18,7 +18,6 @@ package edu.emory.mathcs.nlp.learn.weight;
 import java.util.Arrays;
 
 import org.apache.commons.math3.util.FastMath;
-
 import edu.emory.mathcs.nlp.common.util.DSUtils;
 import edu.emory.mathcs.nlp.learn.util.Prediction;
 import edu.emory.mathcs.nlp.learn.vector.IndexValuePair;
@@ -128,36 +127,36 @@ public class MultinomialWeightVector extends WeightVector
 		return new Prediction(label, scores[label]);
 	}
 	
-//	@Override
-//	public Pair<Prediction,Prediction> predictTop2(Vector x)
-//	{
-//		double[] scores = scores(x);
-//		Prediction fst, snd;
-//		
-//		if (scores[0] < scores[1])
-//		{
-//			fst = new Prediction(1, scores[1]);
-//			snd = new Prediction(0, scores[0]);
-//		}
-//		else
-//		{
-//			fst = new Prediction(0, scores[0]);			
-//			snd = new Prediction(1, scores[1]);
-//		}
-//		
-//		for (int i=2; i<label_size; i++)
-//		{
-//			if (fst.getScore() < scores[i])
-//			{
-//				snd.copy(fst);
-//				fst.set(i, scores[i]);
-//			}
-//			else if (snd.getScore() < scores[i])
-//				snd.set(i, scores[i]);
-//		}
-//		
-//		return new Pair<Prediction,Prediction>(fst, snd);
-//	}
+	@Override
+	public Pair<Prediction,Prediction> predictTop2(Vector x)
+	{
+		double[] scores = scores(x);
+		Prediction fst, snd;
+		
+		if (scores[0] < scores[1])
+		{
+			fst = new Prediction(1, scores[1]);
+			snd = new Prediction(0, scores[0]);
+		}
+		else
+		{
+			fst = new Prediction(0, scores[0]);			
+			snd = new Prediction(1, scores[1]);
+		}
+		
+		for (int i=2; i<label_size; i++)
+		{
+			if (fst.getScore() < scores[i])
+			{
+				snd.copy(fst);
+				fst.set(i, scores[i]);
+			}
+			else if (snd.getScore() < scores[i])
+				snd.set(i, scores[i]);
+		}
+		
+		return new Pair<Prediction,Prediction>(fst, snd);
+	}
 //
 //	@Override
 //	public Prediction[] predictAll(Vector x)

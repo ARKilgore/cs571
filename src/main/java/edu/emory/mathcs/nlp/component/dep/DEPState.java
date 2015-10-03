@@ -32,6 +32,8 @@ public class DEPState<N extends DEPNode> extends NLPState<N>
 	static public final String SHIFT     = "S";
 	static public final String REDUCE    = "R";
 	
+	static public double totalScore = 0;
+	
 	private DEPArc[]     oracle;
 	private IntArrayList stack;
 	private int          input;
@@ -44,8 +46,27 @@ public class DEPState<N extends DEPNode> extends NLPState<N>
 		shift();
 	}
 	
+// SCORE
+	
+	public double addToScore(double score)
+	{
+		this.totalScore += Math.log(score);
+		return this.totalScore;
+	}
+	
+	public double getTotalScore()
+	{
+		return this.totalScore;
+	}
+	
 //	====================================== ORACLE ======================================
 
+	public DEPState(DEPState other) {
+		super((N[]) other.nodes);
+		this.stack = new IntArrayList(other.stack);
+		this.input = other.input;
+		this.oracle = Arrays.copyOf(other.oracle, other.oracle.length);
+	}
 	@Override
 	public void saveOracle()
 	{
@@ -216,6 +237,26 @@ public class DEPState<N extends DEPNode> extends NLPState<N>
 
 		((DEPEval)eval).add(las, uas, nodes.length-1);
 	}
+	public void evaluatePartial(Eval eval, int distance)
+	{
+		int las = 0, uas = 0;
+		DEPNode node;
+		DEPArc  gold;
+		
+		for (int i=1; i<distance; i++)
+		{
+			node = nodes [i];
+			gold = oracle[i];
+			
+			if (gold.isNode(node.getHead()))
+			{
+				uas++;
+				if (gold.isLabel(node.getLabel())) las++;
+			}
+		}		
+		((DEPEval)eval).add(las, uas, nodes.length-1);
+	}
+	
 	
 //	============================== UTILITIES ==============================
 	
