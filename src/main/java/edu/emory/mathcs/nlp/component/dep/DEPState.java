@@ -32,7 +32,7 @@ public class DEPState<N extends DEPNode> extends NLPState<N>
 	static public final String SHIFT     = "S";
 	static public final String REDUCE    = "R";
 	
-	static public double totalScore = 0;
+	public double totalScore = 0;
 	
 	private DEPArc[]     oracle;
 	private IntArrayList stack;
