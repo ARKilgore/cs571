@@ -18,6 +18,8 @@ package edu.emory.mathcs.nlp.learn.weight;
 import java.util.Arrays;
 
 import org.apache.commons.math3.util.FastMath;
+
+import edu.emory.mathcs.nlp.common.collection.tuple.Pair;
 import edu.emory.mathcs.nlp.common.util.DSUtils;
 import edu.emory.mathcs.nlp.learn.util.Prediction;
 import edu.emory.mathcs.nlp.learn.vector.IndexValuePair;
