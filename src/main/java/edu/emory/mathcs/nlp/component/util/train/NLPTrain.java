@@ -149,17 +149,22 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 	protected double trainOnline(TSVReader<N> reader, List<String> developFiles, NLPComponent<N,?> component, Optimizer optimizer, StringModel model)
 	{
 		Eval eval = component.getEval();
+		
+		// w <- 0
 		double[] prevScores = new double[3];
+		
 		prevScores[0] = 0;
 		//0(most recent score) --> n(least recent score that we want to know about)
 		double currScore;
 		double scoreDelta = 0;
 		float[] prevWeight = null;
 		
+		//for I = 1 -> ITERATIONS do
 		for (int epoch=1; ;epoch++)
 		{
 			eval.clear();
 			optimizer.train(model.getInstanceList());
+			//just reads
 			iterate(reader, developFiles, nodes -> component.process(nodes));
 			currScore = eval.score();
 			
