@@ -118,6 +118,7 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 				for (i=0; i<size; i++) bestWeight[i] = models[i].getWeightVector().toArray().clone();
 				bestScore = currScore;
 				bestIter  = iter;
+				
 			}
 		}
 		
@@ -148,7 +149,11 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 	protected double trainOnline(TSVReader<N> reader, List<String> developFiles, NLPComponent<N,?> component, Optimizer optimizer, StringModel model)
 	{
 		Eval eval = component.getEval();
-		double prevScore = 0, currScore;
+		double[] prevScores = new double[3];
+		prevScores[0] = 0;
+		//0(most recent score) --> n(least recent score that we want to know about)
+		double currScore;
+		double scoreDelta = 0;
 		float[] prevWeight = null;
 		
 		for (int epoch=1; ;epoch++)
@@ -158,9 +163,9 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 			iterate(reader, developFiles, nodes -> component.process(nodes));
 			currScore = eval.score();
 			
-			if (prevScore < currScore)
+			if (guessIncrease(prevScores, currScore, scoreDelta))
 			{
-				prevScore  = currScore;
+				updatePrevScores(prevScores, currScore);
 				prevWeight = model.getWeightVector().toArray().clone();
 			}
 			else
@@ -172,8 +177,74 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 			BinUtils.LOG.info(String.format("%3d: %5.2f\n", epoch, currScore));
 		}
 		
-		return prevScore; 
+		return prevScores[0]; 
+		//why not currScore?
 	}
+	
+	public void updatePrevScores(double scores[], double score)
+	{
+		for (int i = scores.length -1; i > 0; i--)
+			scores[i] = scores[i-1];
+		scores[0] = score;
+	}
+	
+	public boolean guessIncrease(double scores[], double score, double delta)
+	{
+		//Is the score lower because it is quickly decreasing and (we think) it will continue, or will it rise again?
+		
+//		|
+//		||
+//		| \    ^
+//		|  \__/
+//		|____________	
+
+// or
+		
+//		|
+//		||
+//		| \    
+//		|  |
+//		|___\________	
+
+		
+		
+		double diff;
+		if(delta > 0){
+			diff = Integer.MAX_VALUE;
+		}else{
+			diff = -1;
+		}
+		
+		for (int i = 0; i < scores.length; i++)
+		{
+			if (score > scores[i])
+			//there exists a greater number in this scope, we shouldn't guess that this won't increase again
+				return true;
+			else
+				if (diff != -1)
+					if (scores[i] - score < diff)
+						//we want to know if the slope of this decrease is becoming negative less quickly
+						//delta allows for harsher penalty of slopes that don't change direction quickly enough
+						diff = scores[i] - score - delta;
+					else
+						//difference increased
+						//the obvious question is why not just return false at this point, when we have discovered that the negative slope
+						//has been increasing? The answer I'm going with at the moment is:
+						//		The only way that this function will now return true is if an earlier score is found that is
+						//		less than our new score. This would indicate enough volatility in the model that it might be worthwhile
+						//		to see whether it increases again as quickly as it must have done before.
+						diff = -1;
+		}
+	
+		if (diff == -1)
+			//here we know that there exists no score in scope that is less than our test score
+			//and the differences aren't increasing as quickly as we might want
+			return false;
+		else
+			//the differences in scores is decreasing, it may continue.
+			return true;
+	}
+	
 	
 	/** Called by {@link #train(TSVReader, List, NLPComponent, NLPConfig)}. */
 	protected double trainOneVsAll(TSVReader<N> reader, List<String> developFiles, NLPComponent<N,?> component, Optimizer optimizer, StringModel model)
