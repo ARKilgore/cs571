@@ -29,12 +29,11 @@ public class DEPArc extends AbstractArc<DEPNode>
 		set(node, label);
 	}
 
-	public DEPArc copy()
-        {
-                DEPArc depCopy = new DEPArc();
-                depCopy.set(new DEPNode(getNode()), getLabel());
-                return depCopy;
-        }
+	public DEPArc copy(DEPNode node)
+    {
+        DEPArc depCopy = new DEPArc(node, getLabel());
+        return depCopy;
+    }
 
 
 	@Override
