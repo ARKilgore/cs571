@@ -81,7 +81,8 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 		setHead(head);
 		setLabel(label);
 	}
-	
+
+
 //	====================================== GETTERS ======================================
 	
 	/** @return the dependency label of this node if exists; otherwise, null. */

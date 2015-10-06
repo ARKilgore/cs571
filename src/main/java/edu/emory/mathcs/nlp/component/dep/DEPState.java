@@ -65,6 +65,12 @@ public class DEPState<N extends DEPNode> extends NLPState<N>
 		super((N[]) other.nodes);
 		this.stack = new IntArrayList(other.stack);
 		this.input = other.input;
+		this.oracle = new DEPArc[other.oracle.length];
+		for(int i = 0; i < other.oracle.length; i++)
+		{
+			this.oracle[i] = other.oracle[i].copy();
+			
+		}
 		this.oracle = Arrays.copyOf(other.oracle, other.oracle.length);
 	}
 	@Override

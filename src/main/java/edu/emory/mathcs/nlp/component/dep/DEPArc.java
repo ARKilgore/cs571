@@ -23,11 +23,19 @@ import edu.emory.mathcs.nlp.component.util.node.AbstractArc;
 public class DEPArc extends AbstractArc<DEPNode>
 {
 	private static final long serialVersionUID = -9099516205158258095L;
-
+	
 	public DEPArc(DEPNode node, String label)
 	{
 		set(node, label);
 	}
+
+	public DEPArc copy()
+        {
+                DEPArc depCopy = new DEPArc();
+                depCopy.set(new DEPNode(getNode()), getLabel());
+                return depCopy;
+        }
+
 
 	@Override
 	public String toString()

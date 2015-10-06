@@ -29,12 +29,6 @@ abstract public class AbstractArc<NodeType> implements Comparable<AbstractArc<No
 	protected NodeType n_node;
 	protected String   s_label;
 	
-	public AbstractArc copy<NodeType>(AbstractArc arc)
-	{
-		arcCopy = new AbstractArc();
-		arcCopy.set(new NodeType(this.n_node), this.label);
-		return arcCopy;
-	}
 
 	public NodeType getNode()
 	{
