@@ -149,7 +149,6 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 	protected double trainOnline(TSVReader<N> reader, List<String> developFiles, NLPComponent<N,?> component, Optimizer optimizer, StringModel model)
 	{
 		Eval eval = component.getEval();
-		
 		// w <- 0
 		double[] prevScores = new double[3];
 		

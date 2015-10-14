@@ -16,6 +16,7 @@
 package edu.emory.mathcs.nlp.component.pos;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Consumer;
 
 import edu.emory.mathcs.nlp.common.util.FileUtils;
